@@ -1,0 +1,6 @@
+let h1 = document.querySelector("h1");
+
+h1.addEventListener("click", ()=>{
+    h1.style.color = "red";
+    h1.innerText = "i m karan 😎";
+})
