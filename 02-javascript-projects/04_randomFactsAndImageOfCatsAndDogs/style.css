@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: radial-gradient(circle at top, #1f1f2e, #0b0b12);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* MAIN CONTAINER */
+#main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+/* COMMON CARD STYLE */
+#cat,
+#dog {
+    margin: 10px;
+    width: 80%;
+    padding: 20px;
+    border-radius: 18px;
+    color: #eaeaf0;
+
+    background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.08),
+            rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(14px);
+
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.7),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* HEIGHT CONTROL */
+#cat {
+    height: 30%;
+}
+
+#dog {
+    height: 70%;
+}
+
+/* HEADINGS */
+h1 {
+    font-size: 35px;
+    text-align: center;
+}
+
+/* CAT FACT */
+#newFact {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#newFact p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+}
+
+/* DOG IMAGE */
+#dogImg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#dogImg img {
+    height: 100%;
+    object-fit: cover;
+    border-radius: 14px;
+}
+
+/* BUTTON */
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6a5cff, #8f7bff);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(106, 92, 255, 0.4);
+}
