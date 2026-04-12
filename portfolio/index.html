@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HYPER — Portfolio</title>
+
+  <!-- View Transitions API meta -->
+  <meta name="view-transition" content="same-origin" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap" rel="stylesheet" />
+
+  <!-- Three.js · GSAP + ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ══════════ CURSOR ══════════ -->
+<div class="cursor"      id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ══════════ TOAST ══════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════ THREE.JS BG ══════════ -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- ══════════ MOBILE NAV ══════════ -->
+<div class="mobile-nav" id="mobileNav">
+  <a href="#hero"    onclick="closeMobileNav()">Home</a>
+  <a href="#work"    onclick="closeMobileNav()">Work</a>
+  <a href="#about"   onclick="closeMobileNav()">About</a>
+  <a href="#contact" onclick="closeMobileNav()">Contact</a>
+</div>
+
+<!-- ══════════ NAV ══════════ -->
+<nav id="main-nav">
+  <a href="#hero" class="nav-logo">HYP<span>E</span>R</a>
+
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+
+    <!-- GitHub status indicator -->
+    <li>
+      <div class="gh-status" id="ghStatus">
+        <span class="gh-dot" id="ghDot"></span>
+        <span id="ghStatusTxt">GitHub</span>
+      </div>
+    </li>
+
+    <!-- Dark/Light toggle -->
+    <li>
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
+        <!-- Moon icon (shown in dark mode) -->
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <!-- Sun icon (shown in light mode) -->
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+      </button>
+    </li>
+
+    <li><a href="#contact" class="nav-cta">Hire Me →</a></li>
+  </ul>
+
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- ══════════ SCROLL / BACK-TO-TOP ══════════ -->
+<div class="scroll-indicator"><div class="s-line"></div><div class="s-txt">SCROLL</div></div>
+<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- ══════════════ ██  HERO ═══════════════════ -->
+<section id="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">— Available for Freelance · Open to Roles</p>
+    <h1 class="hero-title">
+      <div class="line"><span>FULL STACK</span></div>
+      <div class="line"><span class="hero-name-accent">DEVELOPER</span></div>
+      <div class="line"><span>&amp; CREATOR.</span></div>
+    </h1>
+    <p class="hero-sub">
+      I design and build immersive digital experiences — from pixel-perfect frontends
+      to scalable backends, AI integrations, and everything in between.
+    </p>
+    <div class="hero-actions">
+      <a href="#work"    class="btn btn-primary">View Projects <span class="arrow">→</span></a>
+      <a href="#contact" class="btn btn-outline">Let's Talk</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat-item"><div class="hero-stat-num" id="hStat1">20+</div><div class="hero-stat-label">Projects</div></div>
+    <div class="hero-stat-item"><div class="hero-stat-num" id="hStat2">3+</div><div class="hero-stat-label">Months Exp</div></div>
+    <div class="hero-stat-item"><div class="hero-stat-num" id="hStat3">0</div><div class="hero-stat-label">Awards</div></div>
+  </div>
+</section>
+
+<!-- ══════════ MARQUEE ══════════ -->
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+  ██  WORK / PROJECTS
+══════════════════════════════════════════════════════ -->
+<section id="work">
+  <div class="section-inner">
+    <div class="section-label">Selected Work</div>
+
+    <!-- Toolbar -->
+    <div class="work-toolbar reveal">
+
+      <div class="toolbar-left">
+        <!-- Search -->
+        <div class="search-wrap">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="project-search" placeholder="Search projects or tech…" autocomplete="off" />
+        </div>
+
+        <!-- GitHub fetch button -->
+        <button class="gh-fetch-btn" id="ghFetchBtn" title="Load GitHub repos">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02 0 2.04.14 3 .4 2.28-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/>
+          </svg>
+          Load GitHub Repos
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <!-- Filter chips -->
+        <div class="filter-bar" id="filterBar"></div>
+
+        <!-- Grid / List view toggle -->
+        <div class="view-toggle">
+          <button class="view-btn active" id="viewGrid" title="Grid view">⊞</button>
+          <button class="view-btn"        id="viewList" title="List view">☰</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Projects Grid -->
+    <div class="projects-grid" id="projectsGrid">
+      <div class="no-results" id="noResults">
+        <p>NO RESULTS FOUND</p>
+        <span>Try a different search or category</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+  ██  ABOUT
+══════════════════════════════════════════════════════ -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-label">About</div>
+    <div class="about-grid">
+      <div>
+        <h2 class="about-heading reveal">
+          <small>Who I am</small>
+          I BUILD<br><em>THINGS</em><br>THAT LIVE<br>ON THE WEB.
+        </h2>
+      </div>
+      <div>
+        <p class="about-body reveal">
+          I'm a <strong>full-stack developer and creative technologist</strong> with a passion for
+          crafting interfaces that are both beautiful and brutally functional. I believe the web
+          is the most powerful creative medium ever invented.
+        </p>
+        <p class="about-body reveal">
+          My work spans <strong>interactive frontends</strong>, <strong>scalable APIs</strong>,
+          <strong>AI-powered tools</strong>, and <strong>real-time applications</strong> —
+          always obsessing over the craft, from pixel to database.
+        </p>
+        <p class="about-body reveal">
+          When I'm not coding, you'll find me exploring generative art, contributing to open
+          source, or obsessing over typography.
+        </p>
+        <div class="domains-list reveal">
+          <span class="domain-pill">Frontend</span>
+          <span class="domain-pill">Backend</span>
+          <span class="domain-pill">Full Stack</span>
+          <span class="domain-pill">AI / ML</span>
+          <span class="domain-pill">WebGL</span>
+          <span class="domain-pill">DevOps</span>
+          <span class="domain-pill">Open Source</span>
+        </div>
+        <div class="skills-section reveal">
+          <div class="skills-section-label">Core Technologies</div>
+          <div class="skills-grid">
+            <span class="skill-item"><span class="skill-dot"></span>React / Next.js</span>
+            <span class="skill-item"><span class="skill-dot"></span>Node.js / Express</span>
+            <span class="skill-item"><span class="skill-dot"></span>TypeScript</span>
+            <span class="skill-item"><span class="skill-dot"></span>Python / FastAPI</span>
+            <span class="skill-item"><span class="skill-dot"></span>Three.js / WebGL</span>
+            <span class="skill-item"><span class="skill-dot"></span>PostgreSQL / Redis</span>
+            <span class="skill-item"><span class="skill-dot"></span>Docker / CI-CD</span>
+            <span class="skill-item"><span class="skill-dot"></span>LangChain / OpenAI</span>
+            <span class="skill-item"><span class="skill-dot"></span>GSAP / Framer Motion</span>
+            <span class="skill-item"><span class="skill-dot"></span>AWS / Vercel / GCP</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="about-stats-row">
+      <div class="about-stat reveal"><div class="stat-num">20+</div><div class="stat-label">Projects Shipped</div></div>
+      <div class="about-stat reveal"><div class="stat-num">3+</div><div class="stat-label">Months Experience</div></div>
+      <div class="about-stat reveal"><div class="stat-num">0</div><div class="stat-label">Happy Clients</div></div>
+      <div class="about-stat reveal"><div class="stat-num">0</div><div class="stat-label">Awards Won</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+  ██  CONTACT
+══════════════════════════════════════════════════════ -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="section-label">Contact</div>
+    <div class="contact-grid">
+      <div>
+        <h2 class="contact-big reveal">LET'S<br>BUILD<br>SOMETHING<br><span>GREAT.</span></h2>
+      </div>
+      <div class="contact-info reveal">
+        <div class="contact-info-item">
+          <span class="ci-label">Email</span>
+          <a href="mailto:hello@yourname.dev" class="ci-value">harshkaranofficial@gmail.com</a>
+        </div>
+        <div class="contact-info-item">
+          <span class="ci-label">Location</span>
+          <span class="ci-value" style="cursor:default">Ghaziabad, India</span>
+        </div>
+        <div class="contact-info-item">
+          <span class="ci-label">Status</span>
+          <span class="ci-value" style="color:#4ade80;font-style:normal;font-family:'DM Mono';font-size:.8rem;">● Available</span>
+        </div>
+        <p class="contact-note">
+          Whether it's a startup MVP, enterprise platform, AI tool, or a creative experiment —
+          I'm always up for an interesting challenge.
+        </p>
+        <div class="social-row">
+          <a href="#" class="social-link">GitHub</a>
+          <a href="#" class="social-link">LinkedIn</a>
+          <a href="#" class="social-link">Twitter</a>
+          <a href="#" class="social-link">Dribbble</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════
+  ██  FOOTER
+══════════════════════════════════════════════════════ -->
+<footer>
+  <span class="footer-text">© 2024 <span>HYPER PORTFOLIO</span></span>
+  <span class="footer-text">Built with <span>Three.js</span> + <span>GSAP</span> + ♥</span>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════
+  ██  PROJECT MODAL
+══════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-box" id="modalBox">
+    <button class="modal-close" id="modalClose">✕ Close</button>
+    <!-- Preview: either image or Three.js -->
+    <div id="modalPreview"></div>
+    <div class="modal-body">
+      <div class="modal-meta">
+        <span class="modal-category" id="mCategory"></span>
+        <span class="modal-num"      id="mNum"></span>
+      </div>
+      <h2  class="modal-title"   id="mTitle"></h2>
+      <p   class="modal-desc"    id="mDesc"></p>
+      <div class="modal-stats"   id="mStats" style="display:none"></div>
+      <div class="modal-tags"    id="mTags"></div>
+      <div class="modal-actions" id="mActions"></div>
+    </div>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
