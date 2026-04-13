@@ -1,302 +1,1281 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HYPER — Portfolio</title>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HYPER - Projects</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap"
+      rel="stylesheet"
+    />
 
-  <!-- View Transitions API meta -->
-  <meta name="view-transition" content="same-origin" />
+    <style>
+      /* ═════════ DESIGN TOKENS  —  identical to portfolio ═════════════ */
+      :root {
+        --ink: #0a0a0a;
+        --paper: #f5f0e8;
+        --rust: #c44b2b;
+        --gold: #d4a843;
+        --mist: #8a8a7a;
+        --dim: #111111;
+        --dim2: #161616;
+        --border: rgba(245, 240, 232, 0.07);
+        --border-h: rgba(245, 240, 232, 0.14);
+        --ease: cubic-bezier(0.16, 1, 0.3, 1);
+      }
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap" rel="stylesheet" />
+      /* ════════ RESET ══════════ */
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
 
-  <!-- Three.js · GSAP + ScrollTrigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <link rel="stylesheet" href="portfolio/style.css">
-</head>
-<body>
+      body {
+        background: var(--ink);
+        color: var(--paper);
+        font-family: "DM Mono", monospace;
+        cursor: none;
+      }
 
-<!-- ══════════ CURSOR ══════════ -->
-<div class="cursor"      id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+      /* ══════════════ NOISE GRAIN OVERLAY ══════════════════ */
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 9000;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        opacity: 0.032;
+      }
 
-<!-- ══════════ TOAST ══════════ -->
-<div class="toast" id="toast"></div>
+      /* ════════════════ CUSTOM CURSOR ════════════════════ */
+      .cursor-dot {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background: var(--rust);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition:
+          width 0.18s var(--ease),
+          height 0.18s var(--ease),
+          background 0.18s;
+      }
+      .cursor-ring {
+        position: fixed;
+        width: 32px;
+        height: 32px;
+        border: 1px solid rgba(196, 75, 43, 0.45);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9998;
+        transform: translate(-50%, -50%);
+      }
+      .cursor-dot.on {
+        width: 20px;
+        height: 20px;
+        background: var(--gold);
+      }
+      .cursor-ring.on {
+        width: 48px;
+        height: 48px;
+        border-color: var(--gold);
+      }
 
-<!-- ══════════ THREE.JS BG ══════════ -->
-<canvas id="hero-canvas"></canvas>
+      /* ═════════════════ SPLIT LAYOUT ══════════════════════ */
+      .shell {
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+      }
 
-<!-- ══════════ MOBILE NAV ══════════ -->
-<div class="mobile-nav" id="mobileNav">
-  <a href="#hero"    onclick="closeMobileNav()">Home</a>
-  <a href="#work"    onclick="closeMobileNav()">Work</a>
-  <a href="#about"   onclick="closeMobileNav()">About</a>
-  <a href="#contact" onclick="closeMobileNav()">Contact</a>
-</div>
+      /* ────────── LEFT PANEL  —  fixed, no scroll ───────────── */
+      .left {
+        width: 42%;
+        flex-shrink: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 3.5rem 3.5rem 3rem;
+        border-right: 1px solid var(--border);
+        position: relative;
+        overflow: hidden;
+      }
 
-<!-- ══════════ NAV ══════════ -->
-<nav id="main-nav">
-  <a href="#hero" class="nav-logo">HYP<span>E</span>R</a>
+      /* subtle animated grid pattern behind left panel */
+      .left::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+          linear-gradient(var(--border) 1px, transparent 1px),
+          linear-gradient(90deg, var(--border) 1px, transparent 1px);
+        background-size: 48px 48px;
+        -webkit-mask-image: radial-gradient(
+          ellipse 80% 80% at 30% 50%,
+          black 20%,
+          transparent 80%
+        );
+        mask-image: radial-gradient(
+          ellipse 80% 80% at 30% 50%,
+          black 20%,
+          transparent 80%
+        );
+        animation: gridDrift 24s linear infinite;
+      }
+      @keyframes gridDrift {
+        from {
+          background-position: 0 0;
+        }
+        to {
+          background-position: 48px 48px;
+        }
+      }
 
-  <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
+      /* vertical rust accent line */
+      .left-accent {
+        position: absolute;
+        top: 0;
+        right: -1px;
+        width: 1px;
+        height: 0;
+        background: var(--rust);
+        animation: accentDrop 1.2s 0.4s var(--ease) forwards;
+      }
+      @keyframes accentDrop {
+        to {
+          height: 100%;
+        }
+      }
 
-    <!-- GitHub status indicator -->
-    <li>
-      <div class="gh-status" id="ghStatus">
-        <span class="gh-dot" id="ghDot"></span>
-        <span id="ghStatusTxt">GitHub</span>
-      </div>
-    </li>
+      /* ── Left top block ── */
+      .left-top {
+        position: relative;
+        z-index: 1;
+      }
 
-    <!-- Dark/Light toggle -->
-    <li>
-      <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">
-        <!-- Moon icon (shown in dark mode) -->
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <!-- Sun icon (shown in light mode) -->
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="5"/>
-          <line x1="12" y1="1" x2="12" y2="3"/>
-          <line x1="12" y1="21" x2="12" y2="23"/>
-          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-          <line x1="1" y1="12" x2="3" y2="12"/>
-          <line x1="21" y1="12" x2="23" y2="12"/>
-          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-        </svg>
-      </button>
-    </li>
+      .left-eyebrow {
+        font-size: 0.62rem;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: var(--rust);
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.3s var(--ease) forwards;
+      }
+      .left-eyebrow::before {
+        content: "";
+        display: block;
+        width: 32px;
+        height: 1px;
+        background: var(--rust);
+      }
 
-    <li><a href="#contact" class="nav-cta">Hire Me →</a></li>
-  </ul>
+      .left-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(4.5rem, 7vw, 7.5rem);
+        line-height: 0.88;
+        letter-spacing: 0.02em;
+        color: var(--paper);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+      .left-title .word {
+        display: block;
+        overflow: hidden;
+      }
+      .left-title .word span {
+        display: block;
+        transform: translateY(110%);
+        animation: slideUp 0.9s var(--ease) forwards;
+      }
+      .left-title .word:nth-child(1) span {
+        animation-delay: 0.15s;
+      }
+      .left-title .word:nth-child(2) span {
+        animation-delay: 0.28s;
+        color: var(--rust);
+      }
+      .left-title .word:nth-child(3) span {
+        animation-delay: 0.41s;
+      }
 
-  <button class="hamburger" id="hamburger" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+      @keyframes slideUp {
+        to {
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-<!-- ══════════ SCROLL / BACK-TO-TOP ══════════ -->
-<div class="scroll-indicator"><div class="s-line"></div><div class="s-txt">SCROLL</div></div>
-<button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+      .left-desc {
+        font-family: "Crimson Pro", serif;
+        font-style: italic;
+        font-size: 1.15rem;
+        line-height: 1.75;
+        color: var(--mist);
+        max-width: 340px;
+        opacity: 0;
+        animation: fadeUp 0.8s 0.55s var(--ease) forwards;
+      }
+      .left-desc strong {
+        color: var(--paper);
+        font-style: normal;
+        font-weight: 400;
+      }
 
-<!-- ══════════════ ██  HERO ═══════════════════ -->
-<section id="hero">
-  <div class="hero-content">
-    <p class="hero-eyebrow">— Available for Freelance · Open to Roles</p>
-    <h1 class="hero-title">
-      <div class="line"><span>FULL STACK</span></div>
-      <div class="line"><span class="hero-name-accent">DEVELOPER</span></div>
-      <div class="line"><span>&amp; CREATOR.</span></div>
-    </h1>
-    <p class="hero-sub">
-      I design and build immersive digital experiences — from pixel-perfect frontends
-      to scalable backends, AI integrations, and everything in between.
-    </p>
-    <div class="hero-actions">
-      <a href="#work"    class="btn btn-primary">View Projects <span class="arrow">→</span></a>
-      <a href="#contact" class="btn btn-outline">Let's Talk</a>
-    </div>
-  </div>
-  <div class="hero-stats">
-    <div class="hero-stat-item"><div class="hero-stat-num" id="hStat1">20+</div><div class="hero-stat-label">Projects</div></div>
-    <div class="hero-stat-item"><div class="hero-stat-num" id="hStat2">3+</div><div class="hero-stat-label">Months Exp</div></div>
-    <div class="hero-stat-item"><div class="hero-stat-num" id="hStat3">0</div><div class="hero-stat-label">Awards</div></div>
-  </div>
-</section>
+      /* ── Live counter badge ── */
+      .project-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-top: 2rem;
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--border);
+        background: rgba(245, 240, 232, 0.03);
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--mist);
+        opacity: 0;
+        animation: fadeUp 0.7s 0.7s var(--ease) forwards;
+      }
+      .count-num {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.6rem;
+        line-height: 1;
+        color: var(--paper);
+        letter-spacing: 0.04em;
+      }
+      .count-sep {
+        width: 1px;
+        height: 20px;
+        background: var(--border-h);
+      }
 
-<!-- ══════════ MARQUEE ══════════ -->
-<div class="marquee-wrap" aria-hidden="true">
-  <div class="marquee-track" id="marqueeTrack"></div>
-</div>
+      /* ── Left bottom block ── */
+      .left-bottom {
+        position: relative;
+        z-index: 1;
+      }
 
-<!-- ══════════════════════════════════════════════════════
-  ██  WORK / PROJECTS
-══════════════════════════════════════════════════════ -->
-<section id="work">
-  <div class="section-inner">
-    <div class="section-label">Selected Work</div>
+      /* Search box */
+      .search-wrap {
+        position: relative;
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.85s var(--ease) forwards;
+      }
+      .search-icon {
+        position: absolute;
+        left: 0.85rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--mist);
+        pointer-events: none;
+      }
+      .search-icon svg {
+        display: block;
+      }
+      #searchInput {
+        width: 100%;
+        padding: 0.65rem 1rem 0.65rem 2.4rem;
+        background: rgba(245, 240, 232, 0.04);
+        border: 1px solid var(--border);
+        color: var(--paper);
+        font-family: "DM Mono", monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        outline: none;
+        transition: border-color 0.25s;
+        cursor: text;
+      }
+      #searchInput::placeholder {
+        color: var(--mist);
+      }
+      #searchInput:focus {
+        border-color: var(--rust);
+      }
 
-    <!-- Toolbar -->
-    <div class="work-toolbar reveal">
+      /* Filter chips */
+      .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.45rem;
+        margin-bottom: 2rem;
+        opacity: 0;
+        animation: fadeUp 0.7s 0.95s var(--ease) forwards;
+      }
+      .chip {
+        padding: 0.35rem 0.85rem;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--mist);
+        font-family: "DM Mono", monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        cursor: none;
+        transition: all 0.22s var(--ease);
+      }
+      .chip:hover {
+        border-color: var(--paper);
+        color: var(--paper);
+      }
+      .chip.active {
+        background: var(--rust);
+        border-color: var(--rust);
+        color: var(--paper);
+      }
 
-      <div class="toolbar-left">
-        <!-- Search -->
-        <div class="search-wrap">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          <input type="text" id="project-search" placeholder="Search projects or tech…" autocomplete="off" />
-        </div>
+      /* GitHub link */
+      .gh-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.65rem;
+        text-decoration: none;
+        color: var(--mist);
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        padding-bottom: 2px;
+        border-bottom: 1px solid transparent;
+        transition:
+          color 0.25s,
+          border-color 0.25s;
+        opacity: 0;
+        animation: fadeUp 0.7s 1.05s var(--ease) forwards;
+      }
+      .gh-link:hover {
+        color: var(--paper);
+        border-color: var(--rust);
+      }
+      .gh-link svg {
+        flex-shrink: 0;
+        transition: transform 0.3s var(--ease);
+      }
+      .gh-link:hover svg {
+        transform: translateX(3px);
+      }
 
-        <!-- GitHub fetch button -->
-        <button class="gh-fetch-btn" id="ghFetchBtn" title="Load GitHub repos">
-          <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02 0 2.04.14 3 .4 2.28-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/>
-          </svg>
-          Load GitHub Repos
-        </button>
-      </div>
+      /* ────────────── RIGHT PANEL  —  scrollable list ──────────────── */
+      .right {
+        flex: 1;
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scroll-behavior: smooth;
+        /* hide scrollbar but keep function */
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-h) transparent;
+      }
+      .right::-webkit-scrollbar {
+        width: 4px;
+      }
+      .right::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .right::-webkit-scrollbar-thumb {
+        background: var(--border-h);
+        border-radius: 2px;
+      }
 
-      <div class="toolbar-right">
-        <!-- Filter chips -->
-        <div class="filter-bar" id="filterBar"></div>
+      /* Sticky top bar inside right panel */
+      .right-header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 1.4rem 3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: rgba(10, 10, 10, 0.88);
+        backdrop-filter: blur(14px);
+        border-bottom: 1px solid var(--border);
+      }
+      .right-header-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--mist);
+      }
+      #visibleCount {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 0.06em;
+        color: var(--rust);
+      }
 
-        <!-- Grid / List view toggle -->
-        <div class="view-toggle">
-          <button class="view-btn active" id="viewGrid" title="Grid view">⊞</button>
-          <button class="view-btn"        id="viewList" title="List view">☰</button>
-        </div>
-      </div>
-    </div>
+      /* Sort controls */
+      .sort-row {
+        display: flex;
+        gap: 0.5rem;
+      }
+      .sort-btn {
+        background: none;
+        border: 1px solid var(--border);
+        color: var(--mist);
+        font-family: "DM Mono", monospace;
+        font-size: 0.58rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.3rem 0.7rem;
+        cursor: none;
+        transition: all 0.22s;
+      }
+      .sort-btn:hover {
+        border-color: var(--paper);
+        color: var(--paper);
+      }
+      .sort-btn.active {
+        background: var(--dim2);
+        border-color: var(--border-h);
+        color: var(--paper);
+      }
 
-    <!-- Projects Grid -->
-    <div class="projects-grid" id="projectsGrid">
-      <div class="no-results" id="noResults">
-        <p>NO RESULTS FOUND</p>
-        <span>Try a different search or category</span>
-      </div>
-    </div>
-  </div>
-</section>
+      /* ── Project list ── */
+      .project-list {
+        padding: 0 3rem 5rem;
+      }
 
-<!-- ══════════════════════════════════════════════════════
-  ██  ABOUT
-══════════════════════════════════════════════════════ -->
-<section id="about">
-  <div class="section-inner">
-    <div class="section-label">About</div>
-    <div class="about-grid">
-      <div>
-        <h2 class="about-heading reveal">
-          <small>Who I am</small>
-          I BUILD<br><em>THINGS</em><br>THAT LIVE<br>ON THE WEB.
-        </h2>
-      </div>
-      <div>
-        <p class="about-body reveal">
-          I'm a <strong>full-stack developer and creative technologist</strong> with a passion for
-          crafting interfaces that are both beautiful and brutally functional. I believe the web
-          is the most powerful creative medium ever invented.
-        </p>
-        <p class="about-body reveal">
-          My work spans <strong>interactive frontends</strong>, <strong>scalable APIs</strong>,
-          <strong>AI-powered tools</strong>, and <strong>real-time applications</strong> —
-          always obsessing over the craft, from pixel to database.
-        </p>
-        <p class="about-body reveal">
-          When I'm not coding, you'll find me exploring generative art, contributing to open
-          source, or obsessing over typography.
-        </p>
-        <div class="domains-list reveal">
-          <span class="domain-pill">Frontend</span>
-          <span class="domain-pill">Backend</span>
-          <span class="domain-pill">Full Stack</span>
-          <span class="domain-pill">AI / ML</span>
-          <span class="domain-pill">WebGL</span>
-          <span class="domain-pill">DevOps</span>
-          <span class="domain-pill">Open Source</span>
-        </div>
-        <div class="skills-section reveal">
-          <div class="skills-section-label">Core Technologies</div>
-          <div class="skills-grid">
-            <span class="skill-item"><span class="skill-dot"></span>React / Next.js</span>
-            <span class="skill-item"><span class="skill-dot"></span>Node.js / Express</span>
-            <span class="skill-item"><span class="skill-dot"></span>TypeScript</span>
-            <span class="skill-item"><span class="skill-dot"></span>Python / FastAPI</span>
-            <span class="skill-item"><span class="skill-dot"></span>Three.js / WebGL</span>
-            <span class="skill-item"><span class="skill-dot"></span>PostgreSQL / Redis</span>
-            <span class="skill-item"><span class="skill-dot"></span>Docker / CI-CD</span>
-            <span class="skill-item"><span class="skill-dot"></span>LangChain / OpenAI</span>
-            <span class="skill-item"><span class="skill-dot"></span>GSAP / Framer Motion</span>
-            <span class="skill-item"><span class="skill-dot"></span>AWS / Vercel / GCP</span>
+      /* No results */
+      .no-results {
+        display: none;
+        padding: 6rem 0;
+        text-align: center;
+      }
+      .no-results.show {
+        display: block;
+      }
+      .no-results-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.2rem;
+        color: var(--mist);
+      }
+      .no-results-sub {
+        font-size: 0.7rem;
+        color: var(--mist);
+        margin-top: 0.5rem;
+        letter-spacing: 0.1em;
+      }
+
+      /* ══════════════ PROJECT ITEM CARD ══════════════════ */
+      .project-item {
+        border-bottom: 1px solid var(--border);
+        padding: 2.4rem 0;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1.5rem;
+        align-items: start;
+        position: relative;
+        cursor: none;
+        transition: background 0.28s;
+        /* stagger via JS inline style */
+        opacity: 0;
+        transform: translateX(18px);
+        animation: itemIn 0.55s var(--ease) forwards;
+      }
+      @keyframes itemIn {
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* rust left reveal bar on hover */
+      .project-item::before {
+        content: "";
+        position: absolute;
+        left: -3rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--rust);
+        transform: scaleY(0);
+        transform-origin: top;
+        transition: transform 0.35s var(--ease);
+      }
+      .project-item:hover::before {
+        transform: scaleY(1);
+      }
+
+      /* number tag */
+      .item-num {
+        position: absolute;
+        left: -3rem;
+        top: 2.4rem;
+        font-size: 0.55rem;
+        letter-spacing: 0.2em;
+        color: var(--rust);
+        writing-mode: vertical-lr;
+        opacity: 0;
+        transition: opacity 0.25s;
+        user-select: none;
+      }
+      .project-item:hover .item-num {
+        opacity: 1;
+      }
+
+      /* ── Item left column ── */
+      .item-main {
+      }
+
+      /* Category badge */
+      .item-category {
+        font-size: 0.58rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--rust);
+        margin-bottom: 0.7rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .item-category::after {
+        content: "";
+        display: block;
+        width: 20px;
+        height: 1px;
+        background: var(--rust);
+      }
+
+      /* Project name */
+      .item-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(2rem, 3.5vw, 3rem);
+        letter-spacing: 0.03em;
+        line-height: 0.92;
+        color: var(--paper);
+        margin-bottom: 0.9rem;
+        transition: color 0.22s;
+      }
+      .project-item:hover .item-title {
+        color: var(--rust);
+      }
+
+      /* Description */
+      .item-desc {
+        font-family: "Crimson Pro", serif;
+        font-style: italic;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        color: var(--mist);
+        max-width: 500px;
+        margin-bottom: 1.2rem;
+      }
+
+      /* Tech stack tags */
+      .item-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .tag {
+        font-size: 0.56rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        background: rgba(245, 240, 232, 0.05);
+        border: 1px solid rgba(245, 240, 232, 0.09);
+        color: var(--mist);
+        transition: all 0.2s;
+      }
+      .tag.primary {
+        background: rgba(196, 75, 43, 0.12);
+        border-color: rgba(196, 75, 43, 0.28);
+        color: var(--rust);
+      }
+      .project-item:hover .tag {
+        border-color: rgba(245, 240, 232, 0.15);
+      }
+
+      /* ── Item right column ── */
+      .item-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding-top: 0.2rem;
+        align-items: flex-end;
+        flex-shrink: 0;
+      }
+
+      /* Buttons */
+      .btn-view {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
+        padding: 0.65rem 1.3rem;
+        background: var(--rust);
+        color: var(--paper);
+        font-family: "DM Mono", monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: none;
+        border: none;
+        transition:
+          background 0.22s,
+          transform 0.22s var(--ease);
+        white-space: nowrap;
+      }
+      .btn-view:hover {
+        background: #a83820;
+        transform: translateY(-2px);
+      }
+      .btn-view .arr {
+        transition: transform 0.25s var(--ease);
+      }
+      .btn-view:hover .arr {
+        transform: translateX(4px);
+      }
+
+      .btn-src {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.6rem 1.1rem;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--mist);
+        font-family: "DM Mono", monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: none;
+        transition: all 0.22s var(--ease);
+        white-space: nowrap;
+      }
+      .btn-src:hover {
+        border-color: var(--paper);
+        color: var(--paper);
+        transform: translateY(-2px);
+      }
+
+      /* Featured star pip */
+      .featured-pip {
+        font-size: 0.55rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold);
+        display: flex;
+        align-items: center;
+        gap: 0.35rem;
+      }
+      .featured-pip::before {
+        content: "★";
+      }
+
+      /* ═══════════════ PROGRESS BAR (scroll indicator on right) ══════════════ */
+      .scroll-progress {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 2px;
+        height: 0%;
+        background: var(--rust);
+        z-index: 200;
+        transition: height 0.05s linear;
+      }
+
+      /* ═════════ MOBILE  (≤768px: stack vertically) ═══════════════ */
+      @media (max-width: 768px) {
+        html,
+        body {
+          overflow: auto;
+          height: auto;
+          cursor: auto;
+        }
+        .cursor-dot,
+        .cursor-ring {
+          display: none;
+        }
+
+        .shell {
+          flex-direction: column;
+          height: auto;
+          overflow: visible;
+        }
+
+        .left {
+          width: 100%;
+          height: auto;
+          padding: 2.5rem 1.5rem 2rem;
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+        .left-eyebrow {
+          margin-top: 0.2rem; /* <-- Top space aur kam karne ke liye */
+          margin-bottom: 1rem;
+        }
+        .left::before {
+          display: block;
+          opacity: 0.6;
+          -webkit-mask-image: none;
+        }
+        .left-accent {
+          display: none;
+        }
+        .left-title {
+          font-size: clamp(3.5rem, 14vw, 5.5rem);
+        }
+
+        .right {
+          height: auto;
+          overflow-y: visible;
+          overflow-x: hidden;
+        }
+
+        .right-header {
+          padding: 1rem 1.5rem;
+        }
+        .project-list {
+          padding: 0 1.5rem 4rem;
+        }
+
+        .project-item {
+          grid-template-columns: 1fr;
+          gap: 1.2rem;
+        }
+        .item-actions {
+          flex-direction: row;
+          align-items: flex-start;
+          flex-wrap: wrap;
+        }
+        .item-num {
+          display: none;
+        }
+        .project-item::before {
+          display: none;
+        }
+
+        .scroll-progress {
+          display: none;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .left {
+          padding: 2rem 1.2rem 1.8rem;
+        }
+        .left-desc {
+          font-size: 0.9rem;
+          line-height: 1.4;
+          max-width: 100%;
+          margin-bottom: 1rem;
+        }
+        .project-list {
+          padding: 0 1.2rem 3rem;
+        }
+        .right-header {
+          padding: 0.9rem 1.2rem;
+        }
+        .item-title {
+          font-size: clamp(1.8rem, 8vw, 2.4rem);
+        }
+        .sort-row {
+          display: none;
+        }
+      }
+    </style>
+
+    <!-- ════════════════════════ HTML ════════════════════════ -->
+  </head>
+  <body>
+    <!-- Cursor -->
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Scroll progress bar -->
+    <div class="scroll-progress" id="scrollBar"></div>
+
+    <!-- ════ SHELL — two columns ══ -->
+    <div class="shell">
+      <!-- ═══════ LEFT — fixed info panel ═══════ -->
+      <aside class="left">
+        <div class="left-accent"></div>
+
+        <!-- Top block -->
+        <div class="left-top">
+          <div class="left-eyebrow">Developer Portfolio</div>
+
+          <h1 class="left-title">
+            <div class="word"><span>ALL</span></div>
+            <div class="word"><span>PROJ</span></div>
+            <div class="word"><span>ECTS.</span></div>
+          </h1>
+
+          <p class="left-desc">
+            A complete collection of&ensp;<strong>Frontend</strong>,
+            <strong>Backend</strong>, <strong>Full-Stack</strong>, and
+            <strong>AI</strong> projects — each built with craft and intention.
+          </p>
+
+          <!-- Live project count -->
+          <div class="project-count">
+            <span class="count-num" id="totalCount">10</span>
+            <span class="count-sep"></span>
+            <span>Projects</span>
+            <span class="count-sep"></span>
+            <span id="catCount">5 Categories</span>
           </div>
         </div>
-      </div>
-    </div>
-    <div class="about-stats-row">
-      <div class="about-stat reveal"><div class="stat-num">20+</div><div class="stat-label">Projects Shipped</div></div>
-      <div class="about-stat reveal"><div class="stat-num">3+</div><div class="stat-label">Months Experience</div></div>
-      <div class="about-stat reveal"><div class="stat-num">0</div><div class="stat-label">Happy Clients</div></div>
-      <div class="about-stat reveal"><div class="stat-num">0</div><div class="stat-label">Awards Won</div></div>
-    </div>
-  </div>
-</section>
 
-<!-- ══════════════════════════════════════════════════════
-  ██  CONTACT
-══════════════════════════════════════════════════════ -->
-<section id="contact">
-  <div class="section-inner">
-    <div class="section-label">Contact</div>
-    <div class="contact-grid">
-      <div>
-        <h2 class="contact-big reveal">LET'S<br>BUILD<br>SOMETHING<br><span>GREAT.</span></h2>
-      </div>
-      <div class="contact-info reveal">
-        <div class="contact-info-item">
-          <span class="ci-label">Email</span>
-          <a href="mailto:hello@yourname.dev" class="ci-value">harshkaranofficial@gmail.com</a>
-        </div>
-        <div class="contact-info-item">
-          <span class="ci-label">Location</span>
-          <span class="ci-value" style="cursor:default">Ghaziabad, India</span>
-        </div>
-        <div class="contact-info-item">
-          <span class="ci-label">Status</span>
-          <span class="ci-value" style="color:#4ade80;font-style:normal;font-family:'DM Mono';font-size:.8rem;">● Available</span>
-        </div>
-        <p class="contact-note">
-          Whether it's a startup MVP, enterprise platform, AI tool, or a creative experiment —
-          I'm always up for an interesting challenge.
-        </p>
-        <div class="social-row">
-          <a href="#" class="social-link">GitHub</a>
-          <a href="#" class="social-link">LinkedIn</a>
-          <a href="#" class="social-link">Twitter</a>
-          <a href="#" class="social-link">Dribbble</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+        <!-- Bottom block — controls -->
+        <div class="left-bottom">
+          <!-- Search -->
+          <div class="search-wrap">
+            <span class="search-icon">
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+              </svg>
+            </span>
+            <input
+              id="searchInput"
+              type="text"
+              placeholder="Search by name or technology…"
+              autocomplete="off"
+            />
+          </div>
 
-<!-- ══════════════════════════════════════════════════════
-  ██  FOOTER
-══════════════════════════════════════════════════════ -->
-<footer>
-  <span class="footer-text">© 2024 <span>HYPER PORTFOLIO</span></span>
-  <span class="footer-text">Built with <span>Three.js</span> + <span>GSAP</span> + ♥</span>
-</footer>
+          <!-- Category filters -->
+          <div class="filter-row" id="filterRow">
+            <!-- Built by JS -->
+          </div>
 
-<!-- ══════════════════════════════════════════════════════
-  ██  PROJECT MODAL
-══════════════════════════════════════════════════════ -->
-<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true">
-  <div class="modal-box" id="modalBox">
-    <button class="modal-close" id="modalClose">✕ Close</button>
-    <!-- Preview: either image or Three.js -->
-    <div id="modalPreview"></div>
-    <div class="modal-body">
-      <div class="modal-meta">
-        <span class="modal-category" id="mCategory"></span>
-        <span class="modal-num"      id="mNum"></span>
-      </div>
-      <h2  class="modal-title"   id="mTitle"></h2>
-      <p   class="modal-desc"    id="mDesc"></p>
-      <div class="modal-stats"   id="mStats" style="display:none"></div>
-      <div class="modal-tags"    id="mTags"></div>
-      <div class="modal-actions" id="mActions"></div>
+          <!-- GitHub link -->
+          <a
+            class="gh-link"
+            href="https://github.com/iharshkaran"
+            target="_blank"
+            rel="noopener"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02 0 2.04.14 3 .4 2.28-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"
+              />
+            </svg>
+            github.com/iharshkaran
+            <svg
+              width="11"
+              height="11"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="arr"
+            >
+              <line x1="7" y1="17" x2="17" y2="7" />
+              <polyline points="7 7 17 7 17 17" />
+            </svg>
+          </a>
+        </div>
+      </aside>
+
+      <!-- ════════ RIGHT — scrollable project list ═══════════ -->
+      <main class="right" id="rightPanel">
+        <!-- Sticky top bar -->
+        <div class="right-header">
+          <div class="right-header-label">
+            Showing <span id="visibleCount">10</span> results
+          </div>
+          <div class="sort-row">
+            <button class="sort-btn active" data-sort="default">Default</button>
+            <button class="sort-btn" data-sort="az">A → Z</button>
+            <button class="sort-btn" data-sort="category">Category</button>
+          </div>
+        </div>
+
+        <!-- Items rendered here -->
+        <div class="project-list" id="projectList">
+          <div class="no-results" id="noResults">
+            <div class="no-results-title">NO RESULTS FOUND</div>
+            <div class="no-results-sub">Try a different search or filter</div>
+          </div>
+        </div>
+      </main>
     </div>
-  </div>
-</div>
-<script src="portfolio/script.js"></script>
-</body>
+
+    <!-- ═════════════════ JAVASCRIPT ═══════════════════════════ -->
+    <script>
+      /* ════ ① PROJECT DATA  —  edit only this array
+   Add / remove objects here — no HTML changes needed ══════ */
+      const PROJECTS = [
+        {
+          id: 1,
+          title: "Fashion Editorial Landing Page",
+          description:
+            "A premium fashion editorial landing page with bold typography, smooth scroll animations, and modern UI design.",
+          category: "frontend",
+          tech: ["HTML", "CSS", "JavaScript"],
+          link: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/01_fashionEditorial/",
+          source: "https://github.com/iharshkaran/frontend-mini-projects/tree/main/01-ui-projects/01_fashionEditorial",
+          featured: true,
+        },
+        {
+          id: 2,
+          title: "Trendline Fashion Landing Page",
+          description:
+            "Luxury-inspired fashion UI with minimal layout, clean grid, and elegant typography.",
+          category: "frontend",
+          tech: ["HTML", "CSS", "JavaScript"],
+          link: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/02_trendline/",
+          source: "https://github.com/iharshkaran/frontend-mini-projects/tree/main/01-ui-projects/02_trendline",
+          featured: true,
+        },
+        {
+          id: 3,
+          title: "Spotify Clone Music Player",
+          description:
+            "Interactive music player with play/pause, progress bar, and playlist UI.",
+          category: "frontend",
+          tech: ["HTML", "CSS", "JavaScript"],
+          link: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/04_SpotifyClone/",
+          source: "https://github.com/iharshkaran/frontend-mini-projects/tree/main/01-ui-projects/04_SpotifyClone",
+          featured: true,
+        },
+        {
+          id: 4,
+          title: "Todo List App",
+          description:
+            "Task management app with add, delete, and complete features using local storage.",
+          category: "frontend",
+          tech: ["HTML", "CSS", "JavaScript", "LocalStorage"],
+          link: "https://iharshkaran.github.io/frontend-mini-projects/02-javascript-projects/01_todo-list/",
+          source: "https://github.com/iharshkaran/frontend-mini-projects/tree/main/02-javascript-projects/01_todo-list",
+          featured: true,
+        },
+        {
+          id: 5,
+          title: "CollabBoard",
+          description:
+            "Multiplayer whiteboard with real-time cursors, vector drawing, sticky notes, and integrated video rooms.",
+          category: "fullstack",
+          tech: ["Next.js", "WebSockets", "Yjs", "Liveblocks", "tRPC", "Turso"],
+          link: "https://github.com/",
+          source: "https://github.com/",
+          featured: true,
+        },
+        {
+          id: 6,
+          title: "ShopFlux Commerce",
+          description:
+            "Headless e-commerce platform: custom checkout flows, inventory management, discount engine, and Stripe.",
+          category: "fullstack",
+          tech: [
+            "Next.js",
+            "Stripe",
+            "Prisma",
+            "PostgreSQL",
+            "Cloudflare Workers",
+          ],
+          link: "https://github.com/",
+          source: null,
+          featured: false,
+        },
+        {
+          id: 7,
+          title: "DocuMind AI",
+          description:
+            "RAG-powered document intelligence — upload any PDF, ask questions, get cited answers with source highlighting.",
+          category: "ai",
+          tech: [
+            "Python",
+            "LangChain",
+            "OpenAI",
+            "Pinecone",
+            "FastAPI",
+            "React",
+          ],
+          link: "https://github.com/",
+          source: "https://github.com/",
+          featured: true,
+        },
+        {
+          id: 8,
+          title: "CodeReview Bot",
+          description:
+            "GitHub Action that reviews PRs with GPT-4, flags security issues, suggests refactors, and enforces conventions.",
+          category: "ai",
+          tech: ["Python", "OpenAI", "GitHub Actions", "AST", "YAML"],
+          link: "https://github.com/",
+          source: "https://github.com/",
+          featured: false,
+        },
+        {
+          id: 9,
+          title: "Shader Playground",
+          description:
+            "Interactive GLSL shader editor with live WebGL preview, preset library, and export-to-video for creative coders.",
+          category: "others",
+          tech: ["WebGL", "GLSL", "JavaScript", "Monaco Editor"],
+          link: "https://github.com/",
+          source: "https://github.com/",
+          featured: false,
+        },
+        {
+          id: 10,
+          title: "CLI Toolkit Pro",
+          description:
+            "Batteries-included CLI scaffolder generating opinionated starters for 12 frameworks — git, lint, and CI included.",
+          category: "others",
+          tech: ["Node.js", "Commander.js", "Inquirer", "Handlebars", "npm"],
+          link: "https://github.com/",
+          source: null,
+          featured: false,
+        },
+      ];
+
+      /* ═══════ ② CATEGORIES ═══════════ */
+      const CATEGORIES = [
+        { key: "all", label: "All" },
+        { key: "frontend", label: "Frontend" },
+        { key: "backend", label: "Backend" },
+        { key: "fullstack", label: "Full Stack" },
+        { key: "ai", label: "AI / ML" },
+        { key: "others", label: "Others" },
+      ];
+
+      /* ════════ STATE ═══════════ */
+      let activeFilter = "all";
+      let searchQuery = "";
+      let activeSort = "default";
+
+      /* ═══════════ CATEGORY LABEL HELPER ═══════════ */
+      function catLabel(key) {
+        return CATEGORIES.find((c) => c.key === key)?.label || key;
+      }
+
+      /* ════════════ BUILD FILTER CHIPS ══════════════ */
+      (function buildFilters() {
+        const row = document.getElementById("filterRow");
+        CATEGORIES.forEach((cat) => {
+          const btn = document.createElement("button");
+          btn.className = "chip" + (cat.key === "all" ? " active" : "");
+          btn.textContent = cat.label;
+          btn.dataset.key = cat.key;
+          btn.addEventListener("click", () => {
+            activeFilter = cat.key;
+            row
+              .querySelectorAll(".chip")
+              .forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            render();
+          });
+          row.appendChild(btn);
+        });
+      })();
+
+      /* ═══════════ SEARCH ═════════════ */
+      document.getElementById("searchInput").addEventListener("input", (e) => {
+        searchQuery = e.target.value.toLowerCase().trim();
+        render();
+      });
+
+      /* ═════════════ SORT BUTTONS ══════════════ */
+      document.querySelectorAll(".sort-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeSort = btn.dataset.sort;
+          document
+            .querySelectorAll(".sort-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          render();
+        });
+      });
+
+      /* ════════ UPDATE HEADER STATS (left panel) ════════════ */
+      function updateStats(filtered) {
+        document.getElementById("totalCount").textContent = PROJECTS.length;
+        document.getElementById("visibleCount").textContent = filtered.length;
+        const cats = new Set(PROJECTS.map((p) => p.category));
+        document.getElementById("catCount").textContent =
+          `${cats.size} Categories`;
+      }
+
+      /* ═════════ RENDER PROJECT ITEMS ═════════════ */
+      function render() {
+        const list = document.getElementById("projectList");
+        const noRes = document.getElementById("noResults");
+
+        /* ── Filter ── */
+        let filtered = PROJECTS.filter((p) => {
+          const matchCat =
+            activeFilter === "all" || p.category === activeFilter;
+          const matchSrch =
+            !searchQuery ||
+            p.title.toLowerCase().includes(searchQuery) ||
+            p.description.toLowerCase().includes(searchQuery) ||
+            p.tech.some((t) => t.toLowerCase().includes(searchQuery));
+          return matchCat && matchSrch;
+        });
+
+        /* ── Sort ── */
+        if (activeSort === "az") {
+          filtered = [...filtered].sort((a, b) =>
+            a.title.localeCompare(b.title),
+          );
+        } else if (activeSort === "category") {
+          filtered = [...filtered].sort((a, b) =>
+            a.category.localeCompare(b.category),
+          );
+        }
+
+        /* ── Clear old items ── */
+        list.querySelectorAll(".project-item").forEach((el) => el.remove());
+
+        /* ── No results ── */
+        if (filtered.length === 0) {
+          noRes.classList.add("show");
+          updateStats(filtered);
+          return;
+        }
+        noRes.classList.remove("show");
+        updateStats(filtered);
+
+        /* ── Render each item ── */
+        filtered.forEach((p, idx) => {
+          const item = document.createElement("div");
+          item.className = "project-item";
+          item.style.animationDelay = `${idx * 0.055}s`;
+
+          /* Tech badges */
+          const tagsHTML = p.tech
+            .map(
+              (t, i) =>
+                `<span class="tag${i === 0 ? " primary" : ""}">${t}</span>`,
+            )
+            .join("");
+
+          /* Featured marker */
+          const featHTML = p.featured
+            ? `<div class="featured-pip">Featured</div>`
+            : "";
+
+          /* Source button */
+          const srcHTML = p.source
+            ? `<a class="btn-src" href="${p.source}" target="_blank" rel="noopener">
+           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.1.82-.26.82-.58v-2.03c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .1-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23A11.5 11.5 0 0 1 12 5.8c1.02 0 2.04.14 3 .4 2.28-1.55 3.3-1.23 3.3-1.23.66 1.65.24 2.87.12 3.17.77.84 1.24 1.91 1.24 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.3c0 .32.22.7.83.58C20.57 21.8 24 17.3 24 12 24 5.37 18.63 0 12 0z"/>
+           </svg>
+           Source
+         </a>`
+            : "";
+
+          item.innerHTML = `
+      <span class="item-num">${String(idx + 1).padStart(2, "0")}</span>
+
+      <div class="item-main">
+        <div class="item-category">${catLabel(p.category)}</div>
+        <h2 class="item-title">${p.title}</h2>
+        <p  class="item-desc">${p.description}</p>
+        <div class="item-tags">${tagsHTML}</div>
+      </div>
+
+      <div class="item-actions">
+        <a class="btn-view" href="${p.link}" target="_blank" rel="noopener">
+          View Project <span class="arr">→</span>
+        </a>
+        ${srcHTML}
+        ${featHTML}
+      </div>
+    `;
+
+          /* Cursor hover */
+          item.addEventListener("mouseenter", () => {
+            cursorDot.classList.add("on");
+            cursorRing.classList.add("on");
+          });
+          item.addEventListener("mouseleave", () => {
+            cursorDot.classList.remove("on");
+            cursorRing.classList.remove("on");
+          });
+
+          list.insertBefore(item, noRes);
+        });
+      }
+
+      /* ══════════ CUSTOM CURSOR ═══════════════ */
+      const cursorDot = document.getElementById("cursorDot");
+      const cursorRing = document.getElementById("cursorRing");
+      let cx = 0,
+        cy = 0,
+        rx = 0,
+        ry = 0;
+
+      document.addEventListener("mousemove", (e) => {
+        cx = e.clientX;
+        cy = e.clientY;
+        cursorDot.style.left = cx + "px";
+        cursorDot.style.top = cy + "px";
+      });
+
+      (function ringLoop() {
+        if (window.innerWidth > 768) {
+          rx += (cx - rx) * 0.11;
+          ry += (cy - ry) * 0.11;
+          cursorRing.style.left = rx + "px";
+          cursorRing.style.top = ry + "px";
+        }
+        requestAnimationFrame(ringLoop);
+      })();
+
+      /* Bind hover on static interactive elements */
+      document.querySelectorAll("a, button, input, .chip").forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          cursorDot.classList.add("on");
+          cursorRing.classList.add("on");
+        });
+        el.addEventListener("mouseleave", () => {
+          cursorDot.classList.remove("on");
+          cursorRing.classList.remove("on");
+        });
+      });
+
+      /* ═══════ SCROLL PROGRESS BAR  (tracks right panel scroll) ══════════ */
+      const rightPanel = document.getElementById("rightPanel");
+      const scrollBar = document.getElementById("scrollBar");
+
+      rightPanel.addEventListener("scroll", () => {
+        const { scrollTop, scrollHeight, clientHeight } = rightPanel;
+        const pct =
+          scrollHeight <= clientHeight
+            ? 100
+            : (scrollTop / (scrollHeight - clientHeight)) * 100;
+        scrollBar.style.height = pct + "%";
+      });
+
+      /* ═════ INIT ═════ */
+      render();
+    </script>
+  </body>
 </html>
