@@ -23,7 +23,7 @@ const PROJECTS = [
     tech: ["HTML","CSS","JavaScript"],
     link: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/01_fashionEditorial/",
     demoLink: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/01_fashionEditorial/",
-    image: "portfolio/assets/project1.png",
+    image: "assets/project1.png",
     color: 0xc44b2b, featured: true, source: "manual"
   },
 
@@ -34,7 +34,7 @@ const PROJECTS = [
     tech: ["HTML","CSS","JavaScript"],
     link: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/02_trendline/", 
     demoLink: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/02_trendline/",
-    image: "portfolio/assets/project2.png",
+    image: "assets/project2.png",
     color: 0x2b5cc4, featured: false, source: "manual"
   },
   {
@@ -44,7 +44,7 @@ const PROJECTS = [
     tech: ["HTML","CSS","JavaScript"],
     link: "https://iharshkaran.github.io/frontend-mini-projects/02-javascript-projects/01_todo-list/", 
     demoLink: "https://iharshkaran.github.io/frontend-mini-projects/02-javascript-projects/01_todo-list/",
-    image: "portfolio/assets/project4.png",
+    image: "assets/project4.png",
     color: 0x4b8b3b, featured: false, source: "manual"
   },
   {
@@ -54,7 +54,7 @@ const PROJECTS = [
     tech: ["HTML","CSS","JavaScript"],
     link: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/04_SpotifyClone/", 
     demoLink: "https://iharshkaran.github.io/frontend-mini-projects/01-ui-projects/04_SpotifyClone/",
-    image: "portfolio/assets/project3.png",
+    image: "assets/project3.png",
     color: 0x7c3bc4, featured: true, source: "manual"
   },
   {
