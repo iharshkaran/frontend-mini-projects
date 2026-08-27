@@ -1,0 +1,101 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+body {
+    background: #0f0f0f;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.calculator {
+    width: 100%;
+    background-color: #EFECE3;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 380px;
+    padding: 20px;
+    gap: 12px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.calculator .output {
+    background-color: #8FABD4;
+    grid-column: 1 / 5;
+    color: #fff;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-radius: 10px;
+    padding: 25px 20px;
+    font-size: 30px;
+    font-weight: 700;
+    word-break: break-all;
+    word-wrap: break-word;
+    min-height: 90px;
+    letter-spacing: 1px;
+}
+
+.calculator button {
+    font-size: 22px;
+    font-weight: 600;
+    background-color: #fff;
+    color: #333;
+    border: none;
+    border-radius: 10px;
+    padding: 18px 0;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transition: all 0.15s ease;
+}
+
+.calculator button:hover {
+    background-color: #dbe7fb;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.calculator button:active {
+    transform: translateY(0px) scale(0.96);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+
+.calculator button.operator {
+    background-color: #8FABD4;
+    color: #fff;
+}
+
+.calculator button.operator:hover {
+    background-color: #7998c2;
+}
+
+/* Clear / Delete button */
+.calculator button.clear {
+    background-color: #e57373;
+    color: #fff;
+}
+
+.calculator button.clear:hover {
+    background-color: #d95f5f;
+}
+
+.span-two {
+    grid-column: span 2;
+}
+
+/* Equal (=) button - last child */
+.calculator button:last-child {
+    background-color: #4A70A9;
+    color: #fff;
+}
+
+.calculator button:last-child:hover {
+    background-color: #3d5d8f;
+}

@@ -28,13 +28,10 @@
     
 }
 
-.music-player{
-    background-color: black;
-    position: fixed;
-    bottom:0;
-    width: 100%;
-    height: 72px;
+body{
+    background: #000;
 }
+
 
 a{
     text-decoration: none;
@@ -210,25 +207,37 @@ a{
     opacity: 0.5;
 }
 
+
 .music-player{
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-
+    background-color: black;
+    position: fixed;
+    bottom:0;
+    width: 100%;
+    padding: 0.5rem 2rem;
 }
+
 
 .album{
-    width: 25%;
     display: flex;
-    padding: 2rem;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.control-icons{
+    padding-right: 3.8rem;
 
 }
+
+
 .player{
-    width: 50%;
-}
-
-.controls{
-    width: 25%;
+    width: 45%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
 }
 
 .player-controls{
@@ -247,68 +256,48 @@ a{
     opacity: 1;
 }
 
+
 .playback-bar{
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-.progress-bar{
-    width: 70%;
-    appearance: none;
-    background-color: transparent;
     cursor: pointer;
-    
 }
-.progress-bar::-webkit-slider-thumb{
-    appearance: none;
-    height: 16px;
-    width: 16px;
-    background-color: #1bd760;
-    border-radius: 50%;
-    margin-top: -6px;
-    
-}
-.progress-bar::-webkit-slider-runnable-track{
-    background-color: #ddd;
-    border-radius: 100px;
-    height: 0.25rem;
-    
+
+.curr-time{
+    font-size: 12px;
 }
 
 .album div img{
-    height: 50px;
+    height: 2.5rem;
     border-radius: 0.5rem;
     margin-right: 0.5rem;
 }
-.album p{
-    font-weight: 500;
-    /* display: flex; */
-/* padding: 0.5 0 0.5 0; */
-    align-items: flex-start;
-    margin-right: 1.5rem;
 
-}
 .noera{
-    font-size: 15px;
-    margin-top: 10px;
+    font-size: 13px;
+    margin-bottom: 3px;
+    font-weight: 500;
 }
 .dj{
-    font-size: 11px;
-    opacity: 0.8;
+    font-size: 10px;
+    opacity: 0.7;
+    font-weight: 400;
 }
+
 .hearticon{
     display: flex;
-    justify-content: center;
     align-items: center;
-    font-size: 20px;
+    height: 100%;
+    font-size: 19px;
+    padding-left:1.2rem;
     opacity: 0.8;
-    
 }
 
 .mini-player{
-    height: 20px;
-    margin-top: 17px;
-    margin-left: 0.8rem;
+    padding-left:0.8rem;
+    height: 1.25rem;
     opacity: 0.8;
 }
 
@@ -316,16 +305,9 @@ a{
     opacity: 0.8;
     justify-content: center;
     align-items: center;
-    height: 1.2rem;
+    height: 1.1rem;
     margin-right: 0.5rem;
 }
 .img1:hover{
     opacity: 1;
-}
-.control-icons{
-    padding-left: 3rem;
-    padding-right: 2rem;
-}
-body{
-    background-color: black;
 }

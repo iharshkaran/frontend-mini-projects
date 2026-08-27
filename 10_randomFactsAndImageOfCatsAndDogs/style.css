@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: #0a0f0e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    padding: 20px;
+}
+
+#cat,
+#dog {
+    width: 45%;
+    max-width: 480px;
+    padding: 28px;
+    border-radius: 16px;
+    color: #e8f5f0;
+
+    background: #101c19;
+    border: 1px solid #1f3630;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+#cat {
+    height: 220px;
+}
+
+#dog {
+    height: 480px;
+}
+
+h1 {
+    font-size: 22px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.3px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #1f3630;
+}
+
+#newFact {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#newFact p {
+    font-size: 14px;
+    line-height: 1.7;
+    text-align: center;
+    color: #a8bdb6;
+}
+
+#dogImg {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+#dogImg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
+button {
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #17b88a;
+    color: #06120e;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+}
+
+button:hover {
+    background: #1ed49f;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+    background: #129c76;
+}
