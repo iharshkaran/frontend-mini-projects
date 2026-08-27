@@ -1,26 +1,14 @@
-# Frontend Mini Projects 🚀
+# Frontend Mini Projects 
 
-This repository contains frontend projects created while learning and
-practicing modern HTML, CSS, and JavaScript.
-
----
-
-## 📁 Structure
-- **ui-projects/** → UI & layout focused projects  
-- **javascript-projects/** → JS logic, DOM & API based apps  
-- **javascript-games/** → JavaScript games & interactions  
-
----
-
-## 🧠 About this Repository
-- 👨‍💻 Learning & practice projects  
-- 🎨 Designs may be inspired by online resources  
-- 🧠 Focus on **logic building & core JS concepts**
-
----
-
-## 🛠 Tech
-HTML • CSS • JavaScript
-
-
-## 🙌 Connect With Me
+| #  | Project                               | Live Demo            |
+| -- | ------------------------------------- | -------------------- |
+| 01 | Fashion Editorial                     | 🔗 [View](https://fashion-editorial-xi.vercel.app/) |
+| 02 | Trendline                             | 🔗 [View](https://trendline-self.vercel.app/) |
+| 03 | Photography UI                        | 🔗 [View](https://photography-ui-six.vercel.app/) |
+| 04 | Spotify Clone                         | 🔗 [View](YOUR_LINK) |
+| 05 | Add Friend                            | 🔗 [View](YOUR_LINK) |
+| 06 | Insta Like Effect                     | 🔗 [View](YOUR_LINK) |
+| 07 | Image Hovering Animation              | 🔗 [View](YOUR_LINK) |
+| 08 | Todo List                             | 🔗 [View](YOUR_LINK) |
+| 09 | Calculator                            | 🔗 [View](YOUR_LINK) |
+| 10 | Random Facts & Image of Cats and Dogs | 🔗 [View](YOUR_LINK) |
